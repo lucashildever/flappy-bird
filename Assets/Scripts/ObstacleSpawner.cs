@@ -18,6 +18,10 @@ public class ObstacleSpawner : MonoBehaviour
     {
         var gameManager = GameManager.Instance;
 
+        if(gameManager.IsGameOver()) {
+            return;
+        }
+
         cooldown -= Time.deltaTime;
 
         if(cooldown <= 0f) {
