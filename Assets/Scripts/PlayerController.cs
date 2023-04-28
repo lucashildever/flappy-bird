@@ -19,7 +19,8 @@ public class PlayerController : MonoBehaviour
     {
         // update jumpcooldown
         jumpCoolDown -= Time.deltaTime;
-        bool canJump = jumpCoolDown <= 0;
+        bool isGameActive = GameManager.Instance.IsGameActive();
+        bool canJump = jumpCoolDown <= 0 && isGameActive;
 
         // jump
         if(canJump) {
@@ -27,6 +28,29 @@ public class PlayerController : MonoBehaviour
             if(isJumping) {
                 Jump();
             }
+        }
+
+        thisRigidbody.useGravity = isGameActive;
+    }
+
+    void OnCollisionEnter(Collision other) {
+        OnCustomCollisionEnter(other.gameObject);
+    }
+    void OnTriggerEnter(Collider other) {
+        OnCustomCollisionEnter(other.gameObject);
+    }
+
+    private void OnCustomCollisionEnter(GameObject other) {
+
+        bool isSensor = other.gameObject.CompareTag("Sensor");
+
+        if(isSensor) {
+            // pontuação aumenta
+            GameManager.Instance.score++;
+            Debug.Log("Score: " + GameManager.Instance.score);
+        } else {
+            // game over
+            GameManager.Instance.EndGame();
         }
     }
 
